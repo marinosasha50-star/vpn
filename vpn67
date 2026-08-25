@@ -1,209 +1,53 @@
-{
-  "dns": {
-    "servers": [
-      "77.88.8.8",
-      "77.88.8.1"
-    ],
-    "queryStrategy": "UseIPv4"
-  },
-  "routing": {
-    "rules": [
-      {
-        "port": 443,
-        "type": "field",
-        "network": "udp",
-        "outboundTag": "BLOCK"
-      },
-      {
-        "type": "field",
-        "protocol": [
-          "bittorrent"
-        ],
-        "outboundTag": "BLOCK"
-      },
-      {
-        "type": "field",
-        "domain": [
-          "domain:localhost"
-        ],
-        "outboundTag": "DIRECT"
-      },
-      {
-        "ip": [
-          "127.0.0.0/8",
-          "169.254.0.0/16",
-          "224.0.0.0/4",
-          "213.219.212.4/32",
-          "255.255.255.255/32"
-        ],
-        "type": "field",
-        "outboundTag": "DIRECT"
-      },
-      {
-        "type": "field",
-        "domain": [
-          "domain:rtbcdn.ru",
-          "domain:rutube.ru",
-          "domain:max.ru",
-          "domain:rutubelist.ru"
-        ],
-        "outboundTag": "DIRECT"
-      },
-      {
-        "type": "field",
-        "network": "udp,tcp",
-        "balancerTag": "Balancer"
-      }
-    ],
-    "balancers": [
-      {
-        "tag": "Balancer",
-        "selector": [
-          "Auto1"
-        ],
-        "strategy": {
-          "type": "leastLoad",
-          "settings": {
-            "maxRTT": "6s",
-            "expected": 5,
-            "baselines": [
-              "6s"
-            ],
-            "tolerance": 0.34
-          }
-        },
-        "fallbackTag": "Fall"
-      }
-    ],
-    "domainMatcher": "hybrid",
-    "domainStrategy": "IPIfNonMatch"
-  },
-  "inbounds": [
-    {
-      "tag": "socks",
-      "port": 10808,
-      "listen": "127.0.0.1",
-      "protocol": "socks",
-      "settings": {
-        "udp": true,
-        "auth": "noauth"
-      },
-      "sniffing": {
-        "enabled": true,
-        "routeOnly": false,
-        "destOverride": [
-          "http",
-          "tls",
-          "quic"
-        ]
-      }
-    },
-    {
-      "tag": "http",
-      "port": 10809,
-      "listen": "127.0.0.1",
-      "protocol": "http",
-      "settings": {
-        "allowTransparent": false
-      },
-      "sniffing": {
-        "enabled": true,
-        "routeOnly": false,
-        "destOverride": [
-          "http",
-          "tls",
-          "quic"
-        ]
-      }
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "Auto1",
-      "protocol": "trojan",
-      "settings": {
-        "servers": [
-          {
-            "address": "de6.nnmm.me",
-            "port": 443,
-            "password": "1cN8JyyWmQLMDowrdrz1_4axBGB2kQY2"
-          }
-        ]
-      },
-      "streamSettings": {
-        "network": "tcp",
-        "tcpSettings": {},
-        "security": "tls",
-        "tlsSettings": {
-          "serverName": "de6.nnmm.me",
-          "enableSessionResumption": false,
-          "fingerprint": "qq",
-          "alpn": [
-            "http/1.1"
-          ],
-          "cipherSuites": "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
-        }
-      }
-    },
-    {
-      "tag": "Fall",
-      "protocol": "vless",
-      "settings": {
-        "vnext": [
-          {
-            "address": "213.219.212.12",
-            "port": 443,
-            "users": [
-              {
-                "id": "5d7f19c9-2f0d-47d7-8390-88145689500d",
-                "encryption": "none",
-                "flow": "xtls-rprx-vision"
-              }
-            ]
-          }
-        ]
-      },
-      "streamSettings": {
-        "network": "tcp",
-        "tcpSettings": {
-          "header": {
-            "type": "none"
-          }
-        },
-        "security": "tls",
-        "tlsSettings": {
-          "serverName": "z1.nnmm.me",
-          "enableSessionResumption": false,
-          "fingerprint": "random",
-          "alpn": [
-            "h2",
-            "http/1.1"
-          ]
-        }
-      }
-    },
-    {
-      "tag": "DIRECT",
-      "protocol": "freedom"
-    },
-    {
-      "tag": "BLOCK",
-      "protocol": "blackhole"
-    }
-  ],
-  "burstObservatory": {
-    "pingConfig": {
-      "timeout": "6s",
-      "interval": "30s",
-      "sampling": 3,
-      "httpMethod": "GET",
-      "destination": "https://www.gstatic.com/generate_204",
-      "connectivity": ""
-    },
-    "subjectSelector": [
-      "Auto1",
-      "Fall"
-    ]
-  },
-  "remarks": "🇪🇺 Обход¹"
-}
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@91.108.249.202:705?encryption=none&fp=edge&pbk=nn7zao7trQrkZv5IjiOPmeWPe-Qtj3tFi14Eon9RHC4&security=reality&sni=www.kayak.com&type=grpc#%F0%9F%87%AA%F0%9F%87%BA%E2%9D%93%D0%9D%D0%B5%20%D0%B3%D1%80%D1%83%D0%B7%D0%B8%D1%82%20-%20%D0%98%D0%B7%D0%BC%D0%B5%D0%BD%D0%B8%20%D1%81%D1%82%D1%80%D0%B0%D0%BD%D1%83%F0%9F%91%87
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@132.243.212.245:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=cIgH-cz8JCjHnPQXA4qZNpYWwgYdVKCX3jDhuDbVK24&security=reality&sid=96ef4f5dd00f1ba0&sni=d3-pl.cloud-cdn.xyz&type=tcp#%F0%9F%87%B5%F0%9F%87%B1%20%20%D0%9F%D0%BE%D0%BB%D1%8C%D1%88%D0%B0
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@91.108.249.203:705?encryption=none&fp=edge&pbk=nn7zao7trQrkZv5IjiOPmeWPe-Qtj3tFi14Eon9RHC4&security=reality&sni=www.kayak.com&type=grpc#%F0%9F%87%B5%F0%9F%87%B1%20%20%D0%9F%D0%BE%D0%BB%D1%8C%D1%88%D0%B0%20%232
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@91.108.249.226:443?encryption=none&fp=edge&pbk=pywcnrKBSNKp3Lslb3QDetm6PmtiMrb1zKlmUUs4Ogk&security=reality&sid=549721f71bbc9e9c&sni=www.amd.com&type=xhttp#%F0%9F%87%B5%F0%9F%87%B1%20%20%D0%9F%D0%BE%D0%BB%D1%8C%D1%88%D0%B0%20%233
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@89.125.48.108:443?encryption=none&security=tls&type=grpc#%F0%9F%87%B3%F0%9F%87%B1%20%20%D0%9D%D0%B8%D0%B4%D0%B5%D1%80%D0%BB%D0%B0%D0%BD%D0%B4%D1%8B
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@185.238.191.252:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=SPyieysl8w1lo950icthB72kn_ElyJXkpCdKqmnjGEY&security=reality&sid=494afdc75f8c2fa8&sni=d3-de1.cloud-cdn.xyz&type=tcp#%F0%9F%87%A9%F0%9F%87%AA%20%20%D0%93%D0%B5%D1%80%D0%BC%D0%B0%D0%BD%D0%B8%D1%8F
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@89.125.13.248:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=g36Z7YIqJMJP-uv3DBr72X5jvfjyW1qIAxa8TkWmpmQ&security=reality&sid=ad6e08b22389abd2&sni=d3-ee1.cloud-cdn.xyz&type=tcp#%F0%9F%87%AA%F0%9F%87%AA%20%20%D0%AD%D1%81%D1%82%D0%BE%D0%BD%D0%B8%D1%8F
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@89.125.13.234:443?encryption=none&security=none&type=kcp#%F0%9F%87%AA%F0%9F%87%AA%20%20%D0%AD%D1%81%D1%82%D0%BE%D0%BD%D0%B8%D1%8F%20%232
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@31.207.7.152:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=zWDvtTWK-cWWwHDMHMXcOpQy4k3EKp7yw-5e0wTZAUM&security=reality&sid=5efa80b939612291&sni=d3-se1.cloud-cdn.xyz&type=tcp#%F0%9F%87%B8%F0%9F%87%AA%20%20%D0%A8%D0%B2%D0%B5%D1%86%D0%B8%D1%8F
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@31.207.7.166:443?encryption=mlkem768x25519plus.native.0rtt.T5Cic7xRrwdZrCHNltxIVcGwQYkri1BTBpcnrhVF5meO9xQaXdq7FAFxjHKAlWCAihxmNOhHyaZuSTNZiTQDc7CDvcyrtxFNYIBuKXdLYchTOZpt_sZns6GnpOJSroi9H4M1kJeoa3KK5rsE-_JS2XzDM9NspiuzMVUgwDtKXbUZLvImDEtepPh_d-h6t9o6vRsQwPx6V3NhhDxdFRwMTqyhR4A9vZilNfWMIbzCaKywKjKJzQElgRYcyZAR_oyPaLNAOJx0nUiVQkmhoGIgpGmvZKsVQ2EXUiFa2DVUZ5ocHnS4PKUgOVnCkKRJzDGYnoarsspYgcUDA1MKpIYyH2yH8qNfFYOkmMy3tGE_cxwu6UpjssdSnpCO6aK10GtV5daJcsWS1nUMqLZYyqQ0dZHA-0klDNTFzek7-QQ4XCJf2IGmd9OWtdeDVTBcIUZToLiRftZaa3nJ2BCCXbp0pCUXH-pXvMkq6OUs6xod8Lxy9iwpoUA4Vwx-KAlL99BsDXMwCFmQ3Jk9iip5pDXN6VeBS5q81-QAUWlIf9E95ChwKtSAJ0GpwGmcvNOf-BKRMgWux2InwgGB-uMptlwUBXYptMhjpjXMuxQBxwud5JapZNgyVnR7WaPDNAAKVvOdeDKzsRbNSbivK-LEEAqVojGPldpb_eVij1pw2okjuRItq2Czn8BfHAdoJ2VlXMa4yVIBwfkgTvM2DfxMbBus_HLITBsYjNbBWyIRoFaxuTFVg9Qh9umFpTyB-4N3VxHA14F2DvdjYtZJtkgpUKI72Hwmc3gqk6k7rCTCBIWhNQq3ewemBqJS9FOAxzPM7xaIa1iTkduYDySVEGNg65cMTikFMoTJWKYU1UMM23KuWjVXZmQRnymn-EeBy8M2nCWJPYeHixrJpiKZfWLFfFAK10AN1em_FCZc_qslbbeiz_kZrgCSkNa82LCIRpNxFzN3jyAFDVo_M-y3Flll93CcGpuoNHbLPZeSeYtCk8WX07mL_UPAf4ic48JP9Fxsu9QX16qHqOqUykAEzvGs3tsNSzwwjBV2MFvOH4iolROcZ8G44_tMjVMEoVV0xfoVAkwSmxpqTugT46h4YnmRxIxcTqx_CVc-AHMWUBBJ6WpsDGKnRtIMD6pw04RZRFuIyUTIhgwleLlCoNO87NNBDgSgZLU5tyWWx7ZhZ4Nh7wBp71dJLAaxkWUAexkjrDBX5VRXNzGYhWRyl8t4XNm6AoxjKahlrCZK7zk92iojeRUugKeT_rNRamy4NZGZEgePQwOEgTdb5hA6TouMglWpb9c4_XIgq7RZ3bsS_0yxqPuQtKG5mYUJIfZiP4M4yEy5Q_QPH9p9elaicLvDVWA1mzxeSlSSifmr-7qSNaWjqYCbTVd7g3g6ZKQ9k_J2x6Vc1zdqreQNh6tuWcUThemYS2OQG2QaKWY59bvGNKpUa5l40qUCcrCf8zctKrkD7NePxZK5ZaW1N4ITBLgjc4cDhWScRNSS0ix5HTMNiMe2g4lbLnSTqoKVDtQ_PTUQsyTAfJio2bOD7C3A1ydStpfUEtB2osn-VbKTtvywvsF5td2q1wY&security=none&type=ws#%F0%9F%87%B8%F0%9F%87%AA%20%20%D0%A8%D0%B2%D0%B5%D1%86%D0%B8%D1%8F%20%232
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@85.209.129.231:443?encryption=none&fp=edge&pbk=G1voAdACM-SbI53jIOUwshzJGD8mI4-A4G9hvS2Xwy8&security=reality&sni=www.twitch.tv&type=xhttp#%F0%9F%87%AB%F0%9F%87%AE%20%20%D0%A4%D0%B8%D0%BD%D0%BB%D1%8F%D0%BD%D0%B4%D0%B8%D1%8F
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@195.58.140.174:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=lRuJPDrUb0b32-47hl4BgDoQutqmkuW31N4qVxbDgmI&security=reality&sid=dc927a04e8572c61&sni=d3-fr.cloud-cdn.xyz&type=tcp#%F0%9F%87%AB%F0%9F%87%B7%20%D0%A4%D1%80%D0%B0%D0%BD%D1%86%D0%B8%D1%8F
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@109.104.106.154:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=a_v5l6R-rpVGlENLeONW4sz-GdRwIoDqISOWXGov8nw&security=reality&sid=87709fed663228e5&sni=d3-ro.cloud-cdn.xyz&type=tcp#%F0%9F%87%B7%F0%9F%87%B4%20%D0%A0%D1%83%D0%BC%D1%8B%D0%BD%D0%B8%D1%8F%20%7C%20Gemini
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@117.55.194.45:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=a_v5l6R-rpVGlENLeONW4sz-GdRwIoDqISOWXGov8nw&security=reality&sid=87709fed663228e5&sni=d3-au.cloud-cdn.xyz&type=tcp#%F0%9F%87%A6%F0%9F%87%BA%20%D0%90%D0%B2%D1%81%D1%82%D1%80%D0%B0%D0%BB%D0%B8%D1%8F%20%7C%20Gemini
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@153.52.77.153:709?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=co3WtxeuRrdeMCCeZACrIKe0IB2wDLBxMPKXffeahlE&security=reality&sid=d2a42ea91b0f35ca&sni=www.twitch.tv&type=tcp#%F0%9F%87%BA%F0%9F%87%B8%20%20%D0%A1%D0%A8%D0%90%20%7C%20Gemini
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@195.144.24.146:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=Q0351ApYOgCGCOgSEROnacDdm7xp-kLs9mYddSDFwRQ&security=reality&sid=360881fdb193758d&sni=www.twitch.tv&type=tcp#%F0%9F%87%B2%F0%9F%87%B0%20%D0%9C%D0%B0%D0%BA%D0%B5%D0%B4%D0%BE%D0%BD%D0%B8%D1%8F%20%7C%20Gemini
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@85.155.228.36:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=Q0351ApYOgCGCOgSEROnacDdm7xp-kLs9mYddSDFwRQ&security=reality&sid=360881fdb193758d&sni=github.com&type=tcp#%F0%9F%87%A6%F0%9F%87%B1%20%D0%90%D0%BB%D0%B1%D0%B0%D0%BD%D0%B8%D1%8F%20%7C%20Gemini
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@89.19.223.228:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=lRuJPDrUb0b32-47hl4BgDoQutqmkuW31N4qVxbDgmI&security=reality&sid=0f19f0c8102dc695&sni=d3-ru.cloud-cdn.xyz&type=tcp#%F0%9F%87%B7%F0%9F%87%BA%20%20%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@89.19.223.251:8443?encryption=none&security=none&type=tcp#%F0%9F%87%B5%F0%9F%87%B1%20%20%D0%9C%D0%BE%D1%81%D1%82%20-%20%D0%9F%D0%BE%D0%BB%D1%8C%D1%88%D0%B0
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@89.19.223.240:8443?encryption=none&security=none&type=tcp#%F0%9F%87%B3%F0%9F%87%B1%20%20%D0%9C%D0%BE%D1%81%D1%82%20-%20%D0%9D%D0%B8%D0%B4%D0%B5%D1%80%D0%BB%D0%B0%D0%BD%D0%B4%D1%8B
+vless://ef5164a1-26be-42da-9507-23a4b6a18ef5@89.19.223.253:8443?encryption=none&security=none&type=tcp#%F0%9F%87%A9%F0%9F%87%AA%20%20%D0%9C%D0%BE%D1%81%D1%82%20-%20%D0%93%D0%B5%D1%80%D0%BC%D0%B0%D0%BD%D0%B8%D1%8F
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@194.55.239.111:443?encryption=none&security=tls&type=grpc#%F0%9F%87%B7%F0%9F%87%BA%F0%9F%8F%B3%EF%B8%8F%201%20-%20%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@194.55.239.18:443?encryption=none&security=tls&type=grpc#%F0%9F%87%AA%F0%9F%87%AA%F0%9F%8F%B3%EF%B8%8F%201.1%20-%20%D0%AD%D1%81%D1%82%D0%BE%D0%BD%D0%B8%D1%8F%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@194.55.239.15:443?encryption=none&security=tls&type=grpc#%F0%9F%87%B8%F0%9F%87%AA%F0%9F%8F%B3%EF%B8%8F%201.2%20-%20%D0%A8%D0%B2%D0%B5%D1%86%D0%B8%D1%8F%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@91.185.83.23:443?encryption=none&security=tls&type=grpc#%F0%9F%87%B7%F0%9F%87%BA%F0%9F%8F%B3%EF%B8%8F%202%20-%20%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@91.185.83.19:443?encryption=none&security=tls&type=grpc#%F0%9F%87%A9%F0%9F%87%AA%F0%9F%8F%B3%EF%B8%8F%202.3%20-%20DE%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@5.188.114.71:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=e2J6tVHMU8XoDn2SxWVXii7hUM_chBW01wgSbzbtHk4&security=reality&sid=9c3fa068becd1f48&sni=d3cdn1.cloud-cdn.xyz&type=tcp#%F0%9F%87%B7%F0%9F%87%BA%F0%9F%8F%B3%EF%B8%8F%203%20-%20%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@5.188.114.71:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=w9XrtoY9Yc_j2sv1aRrZkaxBebVCEeMt8_8Wc7vfIAA&security=reality&sid=9ef1df8ef470411e&sni=d3-pl.cloud-cdn.xyz&type=tcp#%F0%9F%87%B5%F0%9F%87%B1%F0%9F%8F%B3%EF%B8%8F%203.1%20-%20PL%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@5.188.114.71:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=222PLQnugqJFihAnh1-GK357qzRU1ZKJw1uJicOHLls&security=reality&sid=27f9f60456f73ec9&sni=d3-ee1.cloud-cdn.xyz&type=tcp#%F0%9F%87%AA%F0%9F%87%AA%F0%9F%8F%B3%EF%B8%8F%203.2%20-%20EE%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@81.163.22.242:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=ai7gOrGJwhtQrdRx6ErKZOIpJVcH7-cMCsezF_9CemU&security=reality&sid=735cc0f593cd91c6&sni=d3cdn2.cloud-cdn.xyz&type=tcp#%F0%9F%87%B7%F0%9F%87%BA%F0%9F%8F%B3%EF%B8%8F%204%20-%20%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@81.163.22.242:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=qO6G_rz63ggEOvEAc81rGB1Yu8BjCnzX1zNGRYaO5hE&security=reality&sid=e7fac2e9fa175d71&sni=d3-nl1.cloud-cdn.xyz&type=tcp#%F0%9F%87%B3%F0%9F%87%B1%F0%9F%8F%B3%EF%B8%8F%204.1%20-%20NL%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@81.163.22.242:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=T8Ksz9LPCJ6RZR_5rCQQu48xAMAZLLqyLcgMk2_ovm0&security=reality&sid=7659bcb57cf06b34&sni=d3-se1.cloud-cdn.xyz&type=tcp#%F0%9F%87%B8%F0%9F%87%AA%F0%9F%8F%B3%EF%B8%8F%204.2%20-%20SE%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@81.163.23.184:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=BMGrPOuNPdjBFGuF6AJ1kfUTOtPEpPlF3yVPq1sMySw&security=reality&sid=b9eeb70a31009864&sni=d3cdn3.cloud-cdn.xyz&type=tcp#%F0%9F%87%B7%F0%9F%87%BA%F0%9F%8F%B3%EF%B8%8F%205%20-%20%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@81.163.23.184:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=1VyI9uZhGNRHoWaKN64kdpA_quoVdF4ALFCXtsvM1k0&security=reality&sid=36eead8266dadafb&sni=d3-de1.cloud-cdn.xyz&type=tcp#%F0%9F%87%A9%F0%9F%87%AA%F0%9F%8F%B3%EF%B8%8F%205.1%20-%20DE%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@81.163.23.184:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=6EWFnCMLZDseq0pZFZRvDOPOKvcMkJXR5e_dnIFbXD0&security=reality&sid=8b51bbd1ccfdb165&sni=d3fi.cloud-cdn.xyz&type=tcp#%F0%9F%87%AB%F0%9F%87%AE%F0%9F%8F%B3%EF%B8%8F%205.2%20-%20FI%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@81.163.23.229:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=73TR7OJB5qwHj6Wv84OOnMnc3XijQROD1j9Y6w7eHj8&security=reality&sid=8af2a87ba6dd24bf&sni=d3cdn4.cloud-cdn.xyz&type=tcp#%F0%9F%87%B7%F0%9F%87%BA%F0%9F%8F%B3%EF%B8%8F%206%20-%20%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@81.163.23.229:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=7wJQCUUcswhobHAUhqBy3j9e3ThER19Q3wtQMgzivBI&security=reality&sid=0c9f18e370fa5c52&sni=d3-ee1.cloud-cdn.xyz&type=tcp#%F0%9F%87%AA%F0%9F%87%AA%F0%9F%8F%B3%EF%B8%8F%206.1%20-%20EE%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@81.163.23.229:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=ja630MjYFDWXCWpvZ20sItm0ckcg6TtXw_8lYpYUw0M&security=reality&sid=48564e79c503fcd8&sni=d3us.cloud-cdn.xyz&type=tcp#%F0%9F%87%BA%F0%9F%87%B8%F0%9F%8F%B3%EF%B8%8F%206.2%20-%20US%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@81.163.22.137:443?encryption=none&security=tls&type=xhttp#%F0%9F%87%B7%F0%9F%87%BA%F0%9F%8F%B3%EF%B8%8F%207%20-%20%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@158.160.136.196:443?encryption=none&security=tls&type=xhttp#%F0%9F%87%B7%F0%9F%87%BA%F0%9F%8F%B3%EF%B8%8F%208%20-%20%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@5.178.85.182:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=E3blMGqR3g4L2gdOGzDNSENfOKQCPgmGzsZubJAO8hA&security=reality&sid=965cbfac88f996b9&sni=d3cdn8.cloud-cdn.xyz&type=tcp#%F0%9F%87%B7%F0%9F%87%BA%F0%9F%8F%B3%EF%B8%8F%2010%20-%20%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@5.178.85.182:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=4xe6RqUlr4RymifizwR6UZn292C2hbPmwlv-HJjw9FY&security=reality&sid=8f92381fbe8fa865&sni=d3us.cloud-cdn.xyz&type=tcp#%F0%9F%87%BA%F0%9F%87%B8%F0%9F%8F%B3%EF%B8%8F%2010.1%20-%20US%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@5.178.85.182:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=s7kvax3wkxVseJNiA4XU_yBjuC5wrEyuA6E9BIrII0w&security=reality&sid=cc92602c6ca77573&sni=d3-de1.cloud-cdn.xyz&type=tcp#%F0%9F%87%A9%F0%9F%87%AA%F0%9F%8F%B3%EF%B8%8F%2010.2%20-%20DE%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@158.160.196.250:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=mdb9oT5vHeItx8PzikhfKOKhsNWCLT6JqGm99vk7hzU&security=reality&sid=5ea6eaa2c965253e&sni=d3cdn9.cloud-cdn.xyz&type=tcp#%F0%9F%87%B7%F0%9F%87%BA%F0%9F%8F%B3%EF%B8%8F%2011%20-%20%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@158.160.196.250:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=EkbpWkCU1pXbD7Hola6JIO_C7GlJqzWm48Yg9XGgMCw&security=reality&sid=677b60cf0320407c&sni=d3-pl.cloud-cdn.xyz&type=tcp#%F0%9F%87%B5%F0%9F%87%B1%F0%9F%8F%B3%EF%B8%8F%2011.1%20-%20PL%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@158.160.196.250:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=JVkdVzi659vrl5D42Loy6B8gpyidxZU_8zq0zNuFXgk&security=reality&sid=7443e1a04463cadc&sni=d3-ee1.cloud-cdn.xyz&type=tcp#%F0%9F%87%AA%F0%9F%87%AA%F0%9F%8F%B3%EF%B8%8F%2011.2%20-%20EE%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@45.11.27.152:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=aDIgyqC_7LqDMLAoG--_WErBY_iVxbQNkg0uUj6CeGs&security=reality&sid=a8d19bb0202edb73&sni=d3cdn10.cloud-cdn.xyz&type=tcp#%F0%9F%87%B7%F0%9F%87%BA%F0%9F%8F%B3%EF%B8%8F%2012%20-%20%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@45.11.27.152:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=OLC4iSE9l8GEPagRVnu0s9RezafUu-5iyUcFrgaSoE0&security=reality&sid=fe29c079a3bf8ea5&sni=d3-nl1.cloud-cdn.xyz&type=tcp#%F0%9F%87%B3%F0%9F%87%B1%F0%9F%8F%B3%EF%B8%8F%2012.1%20-%20NL%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@45.11.27.152:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=PGKYleds_NMz1xrJ3450xbV34Bpvb0hUEAfIxnm_L1k&security=reality&sid=53d440ed1eb6fcba&sni=d3-se1.cloud-cdn.xyz&type=tcp#%F0%9F%87%B8%F0%9F%87%AA%F0%9F%8F%B3%EF%B8%8F%2012.2%20-%20SE%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@193.124.125.236:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=lMPmvhmkwPJZNaQCH-UMf_dVSb0YUTHm8dXutX8u0Wk&security=reality&sid=a74d6767182e9f3f&sni=d3cdn11-1.cloud-cdn.xyz&type=tcp#%F0%9F%87%B7%F0%9F%87%BA%F0%9F%8F%B3%EF%B8%8F%2013%20-%20%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@193.124.125.221:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=yt_Cq4wvf2-MqPSDwBY7Bfkly0rvGIGjwkVyJ_FjECM&security=reality&sid=0379f1bab7287c27&sni=d3-de1.cloud-cdn.xyz&type=tcp#%F0%9F%87%A9%F0%9F%87%AA%F0%9F%8F%B3%EF%B8%8F%2013.1%20-%20DE%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@193.124.125.236:443?encryption=none&flow=xtls-rprx-vision&fp=edge&pbk=8XPE7ia7hShi__c7D2YWrzpln4VBlQwKOU9tMoAWfh4&security=reality&sid=2074ddb0787c5814&sni=d3fi.cloud-cdn.xyz&type=tcp#%F0%9F%87%AB%F0%9F%87%AE%F0%9F%8F%B3%EF%B8%8F%2013.2%20-%20FI%200.00%2F10.00%20GB
+vless://3e098b2e-d6fc-415e-abae-16a428ed515e@79.174.92.143:443?encryption=none&security=tls&type=grpc#%F0%9F%87%B7%F0%9F%87%BA%F0%9F%8F%B3%EF%B8%8F%2015%20-%20%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F%200.00%2F10.00%20GB
