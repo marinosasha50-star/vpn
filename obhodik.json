@@ -1,0 +1,210 @@
+{
+  "dns": {
+    "servers": [
+      "77.88.8.8",
+      "77.88.8.1"
+    ],
+    "queryStrategy": "UseIPv4"
+  },
+  "routing": {
+    "rules": [
+      {
+        "port": 443,
+        "type": "field",
+        "network": "udp",
+        "outboundTag": "BLOCK"
+      },
+      {
+        "type": "field",
+        "protocol": [
+          "bittorrent"
+        ],
+        "outboundTag": "BLOCK"
+      },
+      {
+        "type": "field",
+        "domain": [
+          "domain:localhost"
+        ],
+        "outboundTag": "DIRECT"
+      },
+      {
+        "ip": [
+          "127.0.0.0/8",
+          "169.254.0.0/16",
+          "224.0.0.0/4",
+          "213.219.212.4/32",
+          "255.255.255.255/32"
+        ],
+        "type": "field",
+        "outboundTag": "DIRECT"
+      },
+      {
+        "type": "field",
+        "domain": [
+          "domain:rtbcdn.ru",
+          "domain:rutube.ru",
+          "domain:max.ru",
+          "domain:rutubelist.ru"
+        ],
+        "outboundTag": "DIRECT"
+      },
+      {
+        "type": "field",
+        "network": "udp,tcp",
+        "balancerTag": "Balancer"
+      }
+    ],
+    "balancers": [
+      {
+        "tag": "Balancer",
+        "selector": [
+          "Auto1"
+        ],
+        "strategy": {
+          "type": "leastLoad",
+          "settings": {
+            "maxRTT": "6s",
+            "expected": 5,
+            "baselines": [
+              "6s"
+            ],
+            "tolerance": 0.34
+          }
+        },
+        "fallbackTag": "Fall"
+      }
+    ],
+    "domainMatcher": "hybrid",
+    "domainStrategy": "IPIfNonMatch"
+  },
+  "inbounds": [
+    {
+      "tag": "socks",
+      "port": 10808,
+      "listen": "127.0.0.1",
+      "protocol": "socks",
+      "settings": {
+        "udp": true,
+        "auth": "noauth"
+      },
+      "sniffing": {
+        "enabled": true,
+        "routeOnly": false,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ]
+      }
+    },
+    {
+      "tag": "http",
+      "port": 10809,
+      "listen": "127.0.0.1",
+      "protocol": "http",
+      "settings": {
+        "allowTransparent": false
+      },
+      "sniffing": {
+        "enabled": true,
+        "routeOnly": false,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ]
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "Auto1",
+      "protocol": "trojan",
+      "settings": {
+        "servers": [
+          {
+            "address": "ee1.nnmm.me",
+            "port": 443,
+            "password": "1cN8JyyWmQLMDowrdrz1_4axBGB2kQY2"
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {},
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "ee1.nnmm.me",
+          "enableSessionResumption": false,
+          "fingerprint": "firefox",
+          "alpn": [
+            "h2",
+            "http/1.1"
+          ],
+          "cipherSuites": "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+        }
+      }
+    },
+    {
+      "tag": "Fall",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "79.174.92.90",
+            "port": 443,
+            "users": [
+              {
+                "id": "5d7f19c9-2f0d-47d7-8390-88145689500d",
+                "encryption": "none",
+                "flow": "xtls-rprx-vision"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {
+          "header": {
+            "type": "none"
+          }
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "z2.nnmm.me",
+          "enableSessionResumption": false,
+          "fingerprint": "random",
+          "alpn": [
+            "h2",
+            "http/1.1"
+          ]
+        }
+      }
+    },
+    {
+      "tag": "DIRECT",
+      "protocol": "freedom"
+    },
+    {
+      "tag": "BLOCK",
+      "protocol": "blackhole"
+    }
+  ],
+  "burstObservatory": {
+    "pingConfig": {
+      "timeout": "6s",
+      "interval": "30s",
+      "sampling": 3,
+      "httpMethod": "GET",
+      "destination": "https://www.gstatic.com/generate_204",
+      "connectivity": ""
+    },
+    "subjectSelector": [
+      "Auto1",
+      "Fall"
+    ]
+  },
+  "remarks": "🇪🇺 Обход¹"
+}
